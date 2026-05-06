@@ -1,0 +1,7 @@
+Add contact
+Delete Contact
+Details page
+All contacts page
+search by name
+Multiple numbers (home, work)
+Role base access - If time permits
