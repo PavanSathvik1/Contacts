@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import axios from "axios";
 
 export default function AddContacts() {
   const [contact, setContact] = useState({
@@ -17,11 +18,39 @@ export default function AddContacts() {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    alert("Contact Saved!");
-    console.log(contact);
+    try {
+      // 🔥 Combine first + last name for backend
+      const payload = {
+        name: contact.firstName + " " + contact.lastName,
+        email: contact.email,
+        phone: contact.phone,
+      };
+
+      const response = await axios.post(
+        "http://localhost:8080/contacts",
+        payload
+      );
+
+      alert("Contact Saved Successfully!");
+      console.log(response.data);
+
+      // Reset form
+      setContact({
+        firstName: "",
+        lastName: "",
+        email: "",
+        phone: "",
+        altPhone: "",
+        dob: "",
+      });
+
+    } catch (error) {
+      console.error(error);
+      alert("Error saving contact!");
+    }
   };
 
   return (
@@ -35,7 +64,6 @@ export default function AddContacts() {
             <input
               type="text"
               name="firstName"
-              placeholder="Enter first name"
               value={contact.firstName}
               onChange={handleChange}
             />
@@ -46,7 +74,6 @@ export default function AddContacts() {
             <input
               type="text"
               name="lastName"
-              placeholder="Enter last name"
               value={contact.lastName}
               onChange={handleChange}
             />
@@ -58,7 +85,6 @@ export default function AddContacts() {
           <input
             type="email"
             name="email"
-            placeholder="Enter email"
             value={contact.email}
             onChange={handleChange}
           />
@@ -66,22 +92,20 @@ export default function AddContacts() {
 
         <div className="grid grid-2">
           <div className="input-group">
-            <label>Phone Number</label>
+            <label>Phone</label>
             <input
               type="tel"
               name="phone"
-              placeholder="Enter phone number"
               value={contact.phone}
               onChange={handleChange}
             />
           </div>
 
           <div className="input-group">
-            <label>Alternative Number</label>
+            <label>Alt Phone</label>
             <input
               type="tel"
               name="altPhone"
-              placeholder="Enter alternative number"
               value={contact.altPhone}
               onChange={handleChange}
             />
@@ -89,7 +113,7 @@ export default function AddContacts() {
         </div>
 
         <div className="input-group">
-          <label>Date of Birth</label>
+          <label>DOB</label>
           <input
             type="date"
             name="dob"
@@ -98,9 +122,7 @@ export default function AddContacts() {
           />
         </div>
 
-        <button type="submit" className="btn btn-primary mt-2">
-          Save Contact
-        </button>
+        <button type="submit">Save Contact</button>
       </form>
     </div>
   );
